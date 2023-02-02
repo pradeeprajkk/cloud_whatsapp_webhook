@@ -82,3 +82,30 @@ app.post("/webhook", (req, res) => {
 app.get("/", (req, res) => {
     return res.status(200).send({ success: true, message: "hello this is webhook setup" });
 });
+
+/**
+ * Send Messages
+ */
+app.post("/sendMessage", (req, res) => {
+    try {
+        let { phone_no_id, to }= req.body;
+        axios({
+            method: "POST",
+            url: "https://graph.facebook.com/v15.0/" + phone_no_id + "/messages?access_token=" + access_token,
+            data: {
+                messaging_product: "whatsapp",
+                to: to,
+                text: {
+                    body: "New Message from Pradeep User 133\nIn the workflow 'Test Circuit12', the answer to the question 'Boolean' is 'Yes'.\nhttps://dev-reports.andonix.com/#/livechat/CH10cf93b442ac44da824b357ac5a2926f"
+                }
+            },
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        return res.status(200).send({ status: true, message: 'success', });
+    } catch(e) {
+        console.log("Error while sending the message", e);
+        return res.status(403).send({ status: false, data: [], ...e });;
+    }
+});
