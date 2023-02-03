@@ -5,8 +5,9 @@ require('dotenv').config();
 
 const app = express().use(body_parser.json());
 
-const access_token = process.env.ACCESS_TOKEN;
-const myToken = process.env.MY_TOKEN;
+const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
+const MY_TOKEN = process.env.MY_TOKEN;
+const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 
 app.listen(8000 || process.env.PORT, () => {
     console.log(`Server Running on port: 8000`);
@@ -27,7 +28,7 @@ app.get("/webhook", (req, res) => {
 
     if (mode && token) {
 
-        if (mode === "subscribe" && token === myToken) {
+        if (mode === "subscribe" && token === MY_TOKEN) {
             console.log(JSON.stringify(challenge));
             return res.status(200).send(challenge);
         } else {
@@ -59,7 +60,7 @@ app.post("/webhook", (req, res) => {
 
                axios({
                 method: "POST",
-                url: "https://graph.facebook.com/v15.0/" + phone_no_id + "/messages?access_token=" + access_token,
+                url: "https://graph.facebook.com/v15.0/" + phone_no_id + "/messages?access_token=" + ACCESS_TOKEN,
                 data: {
                     messaging_product: "whatsapp",
                     to: from,
@@ -88,17 +89,11 @@ app.get("/", (req, res) => {
  */
 app.post("/sendMessage", (req, res) => {
     try {
-        let { phone_no_id, to }= req.body;
+        let data = req.body;
         axios({
             method: "POST",
-            url: "https://graph.facebook.com/v15.0/" + phone_no_id + "/messages?access_token=" + access_token,
-            data: {
-                messaging_product: "whatsapp",
-                to: to,
-                text: {
-                    body: "New Message from Pradeep User 133\nIn the workflow 'Test Circuit12', the answer to the question 'Boolean' is 'Yes'.\nhttps://dev-reports.andonix.com/#/livechat/CH10cf93b442ac44da824b357ac5a2926f"
-                }
-            },
+            url: "https://graph.facebook.com/v15.0/" + PHONE_NUMBER_ID + "/messages?access_token=" + ACCESS_TOKEN,
+            data: data,
             headers: {
                 "Content-Type": "application/json"
             }
