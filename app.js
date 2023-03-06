@@ -65,15 +65,19 @@ app.post("/webhook", (req, res) => {
                     messaging_product: "whatsapp",
                     to: from,
                     text: {
-                        body: "Hello... I'm Pradeep, your message is " + msg_body
+                        body: "You will be contacted shortly by our CST."
                     }
                 },
                 headers: {
                     "Content-Type": "application/json"
                 }
-               });
-
-            res.sendStatus(200);
+                }).then((response) => {
+                    console.log(JSON.stringify(response.data));
+                    return res.sendStatus(200)
+                }).catch((error) => {
+                    console.log("Error while sending the message", error);
+                    return res.sendStatus(403)
+                });
         } else {
             res.sendStatus(404);
         }
@@ -97,8 +101,12 @@ app.post("/sendMessage", (req, res) => {
             headers: {
                 "Content-Type": "application/json"
             }
+        }).then((response) => {
+            console.log(JSON.stringify(response.data));
+            return res.status(200).send({ status: true, message: 'success', });
+        }).catch((error) => {
+            throw error;
         });
-        return res.status(200).send({ status: true, message: 'success', });
     } catch(e) {
         console.log("Error while sending the message", e);
         return res.status(403).send({ status: false, data: [], ...e });;
