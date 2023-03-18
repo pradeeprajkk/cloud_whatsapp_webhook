@@ -7,8 +7,10 @@ const {
     Configuration,
     OpenAIApi
 } = require("openai");
+
+const openAiKey = process.env.openAi;
 const configuration = new Configuration({
-    apiKey: "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",
+    apiKey: openAiKey,
 });
 const openai = new OpenAIApi(configuration);
 const generatePrompt = (prompt, text, context) => {

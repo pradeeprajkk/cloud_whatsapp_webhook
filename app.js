@@ -63,8 +63,6 @@ app.post("/webhook", async (req, res) => {
                console.log("from " + from);
                console.log("boady param " + msg_body);
 
-               
-
                if (msg_body.toLowerCase().indexOf("@andi") > -1) {
                     const openaiText = await new OpenAI().chat(promptText, msg_body.replace('@andi', ''), "");
                     responseText = openaiText;
