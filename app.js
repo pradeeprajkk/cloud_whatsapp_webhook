@@ -11,6 +11,8 @@ const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 
 const OpenAI = require('./openAI')
 
+let promptText = "You are an expert in the manufacturing and automotive industry. Your default language is English. The users will call you @andi and you live in an application call it SmartWorkStation by Andonix.";
+
 app.listen(8000 || process.env.PORT, () => {
     console.log(`Server Running on port: 8000`);
     console.log("webhook is listening...");
@@ -63,7 +65,7 @@ app.post("/webhook", async (req, res) => {
                let responseText = "You will be contacted shortly by our CST.";
 
                if (msg_body.toLowerCase().indexOf("@andi") > -1) {
-                    const openaiText = await new OpenAI().chat(eDic.s(this.user.language, "OpenAIPrompt"), text, context);
+                    const openaiText = await new OpenAI().chat(promptText, msg_body.replace('@andi', ''), "");
                     responseText = openaiText;
                } 
 
