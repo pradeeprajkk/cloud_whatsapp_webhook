@@ -45,6 +45,7 @@ app.get("/webhook", (req, res) => {
 
 app.post("/webhook", async (req, res) => {
     let payload = req.body;
+    let responseText = "";
 
     console.log(JSON.stringify(payload, null, 2));
 
@@ -62,12 +63,14 @@ app.post("/webhook", async (req, res) => {
                console.log("from " + from);
                console.log("boady param " + msg_body);
 
-               let responseText = "You will be contacted shortly by our CST.";
+               
 
                if (msg_body.toLowerCase().indexOf("@andi") > -1) {
                     const openaiText = await new OpenAI().chat(promptText, msg_body.replace('@andi', ''), "");
                     responseText = openaiText;
-               } 
+               } else {
+                    responseText = "You will be contacted shortly by our CST.";
+               }
 
 
                axios({
