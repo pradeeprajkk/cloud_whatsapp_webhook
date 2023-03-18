@@ -9,6 +9,8 @@ const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const MY_TOKEN = process.env.MY_TOKEN;
 const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 
+const OpenAI = require('./openAI')
+
 app.listen(8000 || process.env.PORT, () => {
     console.log(`Server Running on port: 8000`);
     console.log("webhook is listening...");
@@ -39,7 +41,7 @@ app.get("/webhook", (req, res) => {
     }
 });
 
-app.post("/webhook", (req, res) => {
+app.post("/webhook", async (req, res) => {
     let payload = req.body;
 
     console.log(JSON.stringify(payload, null, 2));
@@ -58,6 +60,14 @@ app.post("/webhook", (req, res) => {
                console.log("from " + from);
                console.log("boady param " + msg_body);
 
+               let responseText = "You will be contacted shortly by our CST.";
+
+               if (msg_body.toLowerCase().indexOf("@andi") > -1) {
+                    const openaiText = await new OpenAI().chat(eDic.s(this.user.language, "OpenAIPrompt"), text, context);
+                    responseText = openaiText;
+               } 
+
+
                axios({
                 method: "POST",
                 url: "https://graph.facebook.com/v15.0/" + phone_no_id + "/messages?access_token=" + ACCESS_TOKEN,
@@ -65,7 +75,7 @@ app.post("/webhook", (req, res) => {
                     messaging_product: "whatsapp",
                     to: from,
                     text: {
-                        body: "You will be contacted shortly by our CST."
+                        body: responseText
                     }
                 },
                 headers: {
